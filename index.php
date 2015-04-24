@@ -29,7 +29,7 @@ function _list($db, $collection){
     'limit' =>    (isset($_GET['limit']))   ? $_GET['limit'] : false, 
     'page' =>     (isset($_GET['page']))    ? $_GET['page'] : false,
     'filter' =>   (isset($_GET['filter']))  ? $_GET['filter'] : false,
-    'regex' =>    (isset($_GET['regex']))   ? $_GET['regex'] : false,
+    'wildcard' =>    (isset($_GET['regex']))   ? $_GET['regex'] : false,
     'sort' =>     (isset($_GET['sort']))    ? $_GET['sort'] : false
   );
   
