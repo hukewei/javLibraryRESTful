@@ -44,16 +44,20 @@ function mongoRead($server, $db, $collection, $id) {
     $conn = new MongoClient($server);
     $_db = $conn->{$db};
     $collection = $_db->{$collection};
-    if (strpos($id,';') !== false) {
+    if (strpos($id,'@') !== false) {
       //multiple resources get
-      $ids = explode(";", $id);
+      $ids = explode("@", $id);
       $MongoIdsArray = array();
       foreach ($ids as $value){
-        $MongoIdsArray[] = new MongoId($value);
+        $MongoIdsArray[] = 'ObjectId('.$value.')';
       }
-      
-      $criteria = array('_id' => array('$in' => $MongoIdsArray));
-      $document = $collection->findOne($criteria);
+
+      $json = json_encode($MongoIdsArray);
+      $json = str_replace('"ObjectId(','ObjectId("', $json);
+      $json = str_replace(')"', '")',$json);
+
+      $criteria = array('_id' => array('$in' => $json));
+      $document = $collection->find($criteria);
       $conn->close();
       return $document;
 
@@ -69,10 +73,6 @@ function mongoRead($server, $db, $collection, $id) {
       
       return $document;
     }
-    
-    
-    
-    
   } catch (MongoConnectionException $e) {
     die('Error connecting to MongoDB server');
   } catch (MongoException $e) {
