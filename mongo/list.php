@@ -61,8 +61,7 @@ function mongoList($server, $db, $collection, $select = null) {
       }
     } else {
       if($criteria) {
-        $criteria['_id'] = 1;
-        $cursor = $collection->find($criteria);
+        $cursor = $collection->find($criteria, array('_id'=> 1));
       } else {
         $cursor = $collection->find(array(), array('_id'=> 1));
       }
