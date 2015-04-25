@@ -30,6 +30,7 @@ function _list($db, $collection){
     'page' =>     (isset($_GET['page']))    ? $_GET['page'] : false,
     'filter' =>   (isset($_GET['filter']))  ? $_GET['filter'] : false,
     'wildcard' =>    (isset($_GET['regex']))   ? $_GET['regex'] : false,
+    'only_id' =>    (isset($_GET['only_id']))   ? $_GET['only_id'] : false,
     'sort' =>     (isset($_GET['sort']))    ? $_GET['sort'] : false
   );
   

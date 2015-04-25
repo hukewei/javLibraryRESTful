@@ -8,6 +8,7 @@ define('MONGO_LIST_MAX_PAGE_SIZE',false); // set to a number to enforce a max pa
  *
  *  $select = array(
  *    'limit' => 0, 
+ *    'only_id' => 0, 
  *    'page' => 0,
  *    'filter' => array(
  *      'field_name' => 'exact match'
@@ -32,29 +33,40 @@ function mongoList($server, $db, $collection, $select = null) {
     $collection = $_db->{$collection};
     
     $criteria = NULL;
+    $only_id = false;
     
     // add exact match filters if they exist
     
     if(isset($select['filter']) && count($select['filter'])) {
       $criteria = $select['filter'];
     }
-    
+
+    if(isset($select['only_id']) && $select['only_id']) {
+      $only_id = true;
+    }
+
     // add regex match filters if they exist
-    
-    if(isset($select['wildcard']) && count($select['wildcard'])) {
+    if($select['wildcard'] != false && isset($select['wildcard']) && count($select['wildcard'])) {
       foreach($select['wildcard'] as $key => $value) {
         $criteria[$key] = new MongoRegex($value);
       }
     }
     
     // get results
-    
-    if($criteria) {
-      $cursor = $collection->find($criteria);
+    if(!$only_id) {
+      if($criteria) {
+        $cursor = $collection->find($criteria);
+      } else {
+        $cursor = $collection->find();
+      }
     } else {
-      $cursor = $collection->find();
+      if($criteria) {
+        $criteria['_id'] = 1;
+        $cursor = $collection->find($criteria);
+      } else {
+        $cursor = $collection->find(array(), array('_id'=> 1));
+      }
     }
-    
     // sort the results if specified
     
     if(isset($select['sort']) && $select['sort'] && count($select['sort'])) {
