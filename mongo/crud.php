@@ -46,21 +46,22 @@ function mongoRead($server, $db, $collection, $id) {
     $collection = $_db->{$collection};
     if (strpos($id,'@') !== false) {
       //multiple resources get
-      $ids = explode("@", $id);
-      $MongoIdsArray = array();
-      foreach ($ids as $value){
-        $MongoIdsArray[] = 'ObjectId('.$value.')';
+      $_ids = array();
+      $mongoIdArray = explode("@", $id);
+      $allDocument = array();
+      $count = 0;
+
+      foreach($mongoIdArray as $seprateIds){
+          $criteria = array(
+            '_id' => $seprateIds instanceof MongoId ? $seprateIds : new MongoId($seprateIds)
+          );
+        
+          $document = $collection->findOne($criteria);          
+          $document['_id'] = $document['_id']->{'$id'};
+          $allDocument[] = $document;
       }
-
-      $json = json_encode($MongoIdsArray);
-      $json = str_replace('"ObjectId(','ObjectId("', $json);
-      $json = str_replace(')"', '")',$json);
-
-      $criteria = array('_id' => array('$in' => $json));
-      $document = $collection->find($criteria);
       $conn->close();
-      return $document;
-
+      return $allDocument;
     } else {
       $criteria = array(
         '_id' => new MongoId($id)
