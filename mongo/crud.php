@@ -11,6 +11,9 @@
  * Create (insert)
  */
 
+define('MONGO_MEMBER_COLLECTION', 'javLibrary.members');
+
+
 function mongoCreate($server, $db, $collection, $document) {
 
   try {
@@ -18,6 +21,32 @@ function mongoCreate($server, $db, $collection, $document) {
     $conn = new MongoClient($server);
     $_db = $conn->{$db};
     $collection = $_db->{$collection};
+    $return_value;
+
+    if($collection == MONGO_MEMBER_COLLECTION) {
+      $login = $document['email'];
+      $response = $collection->findOne(array("email" => $login));
+      if($response !==null) {
+        if($response['password'] == $document['password']) {
+          //login and pw matched
+          $conn->close();
+          $return_value =  $response['_id'];
+        } else {
+          //pw not correct
+          $return_value =  array("id" => "");
+        }
+      } else {
+        //create new account
+        $collection->insert($document);
+        $conn->close();
+        $document['_id'] = $document['_id']->{'$id'};
+        $return_value =   array("id" => $document['_id']);
+      }
+    } else {
+      die('create function is not allowed for this collection, only '.$collection.' is allowed');
+    }
+    $conn->close();
+    return $return_value;
     $collection->insert($document);
     $conn->close();
     

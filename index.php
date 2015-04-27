@@ -14,7 +14,7 @@ $app = new Slim();
  */
 
 $app->get(    '/:db/:collection',      '_list');
-//$app->post(   '/:db/:collection',      '_create');
+$app->post(   '/:db/:collection',      '_create');
 $app->get(    '/:db/:collection/:id',  '_read');
 //$app->put(    '/:db/:collection/:id',  '_update');
 //$app->delete( '/:db/:collection/:id',  '_delete');
