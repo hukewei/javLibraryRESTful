@@ -82,7 +82,7 @@ function _read($db, $collection, $id){
 function _update($db, $collection, $id){
 
   $document = json_decode(Slim::getInstance()->request()->getBody(), true);
-  $action = (isset($_GET['action']))   ? $_GET['action'] : false, 
+  $action = (isset($_GET['action']))   ? $_GET['action'] : false;
 
   $data = mongoUpdate(
     MONGO_HOST, 
