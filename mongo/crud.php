@@ -145,7 +145,7 @@ function mongoUpdate($server, $db, $collection, $id, $document, $action) {
 
     if($collection == 'javLibrary.'.MONGO_MEMBER_PREFERENCE_COLLECTION) {
       if(!isset($action)) {
-        $action = "PUSH"
+        $action = "PUSH";
       }
       $criteria = array(
         'userID' => $id
