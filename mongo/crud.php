@@ -133,7 +133,7 @@ function mongoRead($server, $db, $collection, $id) {
  * Update (set properties)
  */
 
-function mongoUpdate($server, $db, $collection, $id, $document) {
+function mongoUpdate($server, $db, $collection, $id, $document, $action) {
 
   try {
   
@@ -141,14 +141,27 @@ function mongoUpdate($server, $db, $collection, $id, $document) {
     $_db = $conn->{$db};
     $collection = $_db->{$collection};
 
+
+
     if($collection == 'javLibrary.'.MONGO_MEMBER_PREFERENCE_COLLECTION) {
+      if(!isset($action)) {
+        $action = "PUSH"
+      }
       $criteria = array(
         'userID' => $id
       );
       
       // make sure that an _id never gets through
       unset($document['_id']);
-      $collection->update($criteria,array('$addToSet' => $document));
+      if ($action == "PUSH") {
+        $collection->update($criteria,array('$addToSet' => $document));
+      } else if ($action == "PULL") {
+        $collection->update($criteria,
+          array('$pull' => $document),
+          array(
+            'multi' => true
+          ));
+      }
       $conn->close();
       $document['_id'] = $id;
       return $document;
@@ -191,23 +204,6 @@ function mongoDelete($server, $db, $collection, $id, $document) {
     $conn = new MongoClient($server);
     $_db = $conn->{$db};
     $collection = $_db->{$collection};
-    if($collection == 'javLibrary.'.MONGO_MEMBER_PREFERENCE_COLLECTION) {
-      $criteria = array(
-        'userID' => $id
-      );
-      
-      // make sure that an _id never gets through
-      $collection->update($criteria,
-                            array('$pull' => $document),
-                            array(
-                              'multi' => true
-                            ));
-      $conn->close();
-      return array('success'=>'deleted');
-    } else {
-      die('delete function is not allowed for this collection');
-    }
-    
     $criteria = array(
       '_id' => new MongoId($id)
     );

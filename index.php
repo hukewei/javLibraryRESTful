@@ -17,7 +17,7 @@ $app->get(    '/:db/:collection',      '_list');
 $app->post(   '/:db/:collection',      '_create');
 $app->get(    '/:db/:collection/:id',  '_read');
 $app->put(    '/:db/:collection/:id',  '_update');
-$app->delete( '/:db/:collection/:id',  '_delete');
+//$app->delete( '/:db/:collection/:id',  '_delete');
 
 // @todo: add count collection command mongo/commands.php
 
@@ -82,13 +82,15 @@ function _read($db, $collection, $id){
 function _update($db, $collection, $id){
 
   $document = json_decode(Slim::getInstance()->request()->getBody(), true);
+  $action = (isset($_GET['action']))   ? $_GET['action'] : false, 
 
   $data = mongoUpdate(
     MONGO_HOST, 
     $db, 
     $collection, 
     $id,
-    $document
+    $document,
+    $action
   ); 
   header("Content-Type: application/json");
   echo json_encode($data);
