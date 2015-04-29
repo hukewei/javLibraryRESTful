@@ -12,6 +12,7 @@
  */
 
 define('MONGO_MEMBER_COLLECTION', 'javLibrary.members');
+define('MONGO_MEMBER_PREFERENCE_COLLECTION', 'javLibrary.membersPreference');
 
 
 function mongoCreate($server, $db, $collection, $document) {
@@ -38,8 +39,13 @@ function mongoCreate($server, $db, $collection, $document) {
       } else {
         //create new account
         $collection->insert($document);
-        $conn->close();
+        $preference_collection = $_db->{MONGO_MEMBER_PREFERENCE_COLLECTION};
         $document['_id'] = $document['_id']->{'$id'};
+        // initialise the preference collection
+        $preference_collection->insert(array("userID" => $document['_id'], 
+          "favorite_actors" => array(), "favorite_videos" => array(),
+           "wanted_videos" => array(), "watched_videos" => array()));
+        $conn->close();
         $return_value =   array("id" => $document['_id']);
       }
     } else {
