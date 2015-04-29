@@ -130,7 +130,7 @@ function mongoUpdate($server, $db, $collection, $id, $document) {
     $_db = $conn->{$db};
     $collection = $_db->{$collection};
 
-    if($collection == MONGO_MEMBER_PREFERENCE_COLLECTION) {
+    if($collection == 'javLibrary'.MONGO_MEMBER_PREFERENCE_COLLECTION) {
       $criteria = array(
         'userID' => $id
       );
@@ -142,7 +142,7 @@ function mongoUpdate($server, $db, $collection, $id, $document) {
       $document['_id'] = $id;
       return $document;
     } else {
-      die('create function is not allowed for this collection');
+      die('update function is not allowed for this collection');
     }
     
     $criteria = array(
@@ -180,7 +180,7 @@ function mongoDelete($server, $db, $collection, $id) {
     $conn = new MongoClient($server);
     $_db = $conn->{$db};
     $collection = $_db->{$collection};
-    if($collection == MONGO_MEMBER_PREFERENCE_COLLECTION) {
+    if($collection == 'javLibrary'.MONGO_MEMBER_PREFERENCE_COLLECTION) {
       $criteria = array(
         'userID' => $id
       );
@@ -196,7 +196,7 @@ function mongoDelete($server, $db, $collection, $id) {
       $document['_id'] = $id;
       return $document;
     } else {
-      die('create function is not allowed for this collection');
+      die('delete function is not allowed for this collection');
     }
     
     $criteria = array(
