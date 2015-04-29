@@ -12,7 +12,7 @@
  */
 
 define('MONGO_MEMBER_COLLECTION', 'javLibrary.members');
-define('MONGO_MEMBER_PREFERENCE_COLLECTION', 'javLibrary.membersPreference');
+define('MONGO_MEMBER_PREFERENCE_COLLECTION', 'membersPreference');
 
 
 function mongoCreate($server, $db, $collection, $document) {
@@ -34,7 +34,7 @@ function mongoCreate($server, $db, $collection, $document) {
           $return_value =  $response['_id'];
         } else {
           //pw not correct
-          $return_value =  array("id" => "");
+          $return_value =  array("id" => "ERROR");
         }
       } else {
         //create new account
