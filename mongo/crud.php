@@ -142,7 +142,7 @@ function mongoUpdate($server, $db, $collection, $id, $document) {
       $document['_id'] = $id;
       return $document;
     } else {
-      die('update function is not allowed for this collection');
+      die('update function is not allowed for this collection, expected : '.$collection);
     }
     
     $criteria = array(
@@ -196,7 +196,7 @@ function mongoDelete($server, $db, $collection, $id) {
       $document['_id'] = $id;
       return $document;
     } else {
-      die('delete function is not allowed for this collection');
+      die('delete function is not allowed for this collection, expected : '.$collection);
     }
     
     $criteria = array(
