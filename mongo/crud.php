@@ -197,15 +197,13 @@ function mongoDelete($server, $db, $collection, $id) {
       );
       
       // make sure that an _id never gets through
-      unset($document['_id']);
       $collection->update($criteria,
                             array('$pull' => $document),
                             array(
                               'multi' => true
                             ));
       $conn->close();
-      $document['_id'] = $id;
-      return $document;
+      return array('success'=>'deleted');
     } else {
       die('delete function is not allowed for this collection');
     }
