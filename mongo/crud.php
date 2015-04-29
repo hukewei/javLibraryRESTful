@@ -98,16 +98,27 @@ function mongoRead($server, $db, $collection, $id) {
       $conn->close();
       return $allDocument;
     } else {
-      $criteria = array(
-        '_id' => new MongoId($id)
-      );
-    
-      $document = $collection->findOne($criteria);
-      $conn->close();
+      if($collection == 'javLibrary.'.MONGO_MEMBER_PREFERENCE_COLLECTION) {
+        $criteria = array(
+          'userID' => $id
+        );
+        
+        $document = $collection->findOne($criteria);
+        $conn->close();
+        $document['_id'] = $document['_id']->{'$id'};
+        return $document;
+      } else
+        $criteria = array(
+          '_id' => new MongoId($id)
+        );
       
-      $document['_id'] = $document['_id']->{'$id'};
-      
-      return $document;
+        $document = $collection->findOne($criteria);
+        $conn->close();
+        
+        $document['_id'] = $document['_id']->{'$id'};
+        
+        return $document;
+      }
     }
   } catch (MongoConnectionException $e) {
     die('Error connecting to MongoDB server');
