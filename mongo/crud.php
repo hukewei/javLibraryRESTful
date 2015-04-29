@@ -184,7 +184,7 @@ function mongoUpdate($server, $db, $collection, $id, $document) {
  * Delete (remove)
  */
 
-function mongoDelete($server, $db, $collection, $id) {
+function mongoDelete($server, $db, $collection, $id, $document) {
 
   try {
   

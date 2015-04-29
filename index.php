@@ -99,11 +99,15 @@ function _update($db, $collection, $id){
 
 function _delete($db, $collection, $id){
 
+  $document = json_decode(Slim::getInstance()->request()->getBody(), true);
+
+
   $data = mongoDelete(
     MONGO_HOST, 
     $db, 
     $collection, 
-    $id
+    $id,
+    $document
   ); 
   header("Content-Type: application/json");
   echo json_encode($data);
