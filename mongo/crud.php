@@ -107,7 +107,7 @@ function mongoRead($server, $db, $collection, $id) {
         $conn->close();
         $document['_id'] = $document['_id']->{'$id'};
         return $document;
-      } else
+      } else {
         $criteria = array(
           '_id' => new MongoId($id)
         );
