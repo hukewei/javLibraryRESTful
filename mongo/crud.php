@@ -138,8 +138,9 @@ function mongoRead($server, $db, $collection, $id) {
         $conn->close();
         
         $document['_id'] = $document['_id']->{'$id'};
-        
-        return $document;
+        $allDocument = array();
+        $allDocument[] = $document
+        return $allDocument;
       }
     }
   } catch (MongoConnectionException $e) {
