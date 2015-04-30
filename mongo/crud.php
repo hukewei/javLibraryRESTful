@@ -91,7 +91,18 @@ function mongoRead($server, $db, $collection, $id) {
             '_id' => $seprateIds instanceof MongoId ? $seprateIds : new MongoId($seprateIds)
           );
         
-          $document = $collection->findOne($criteria);          
+          $document = $collection->findOne($criteria);
+          if($document == NULL && $collection == 'javLibrary.videos') {
+            // search for all collections
+            $all_other_possible_collections = array('most_wanted', 'best_rated', 'new_releases', 'new_entries');
+            foreach ($all_other_possible_collections as $possible_collection){
+                $collection = $_db->{$collection};
+                $document = $collection->findOne($criteria);
+                if($document != NULL) {
+                  break;
+                }
+            }
+          }
           $document['_id'] = $document['_id']->{'$id'};
           $allDocument[] = $document;
       }
@@ -113,6 +124,17 @@ function mongoRead($server, $db, $collection, $id) {
         );
       
         $document = $collection->findOne($criteria);
+        if($document == NULL && $collection == 'javLibrary.videos') {
+          // search for all collections
+          $all_other_possible_collections = array('most_wanted', 'best_rated', 'new_releases', 'new_entries');
+          foreach ($all_other_possible_collections as $possible_collection){
+              $collection = $_db->{$collection};
+              $document = $collection->findOne($criteria);
+              if($document != NULL) {
+                break;
+              }
+          }
+        }
         $conn->close();
         
         $document['_id'] = $document['_id']->{'$id'};
