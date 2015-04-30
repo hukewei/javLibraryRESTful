@@ -139,7 +139,7 @@ function mongoRead($server, $db, $collection, $id) {
         
         $document['_id'] = $document['_id']->{'$id'};
         $allDocument = array();
-        $allDocument[] = $document
+        $allDocument[] = $document;
         return $allDocument;
       }
     }
