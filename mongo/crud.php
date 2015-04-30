@@ -96,10 +96,10 @@ function mongoRead($server, $db, $collection, $id) {
             // search for all collections
             $all_other_possible_collections = array('most_wanted', 'best_rated', 'new_releases', 'new_entries');
             foreach ($all_other_possible_collections as $possible_collection){
-                $collection = $_db->{$collection};
+                $collection = $_db->{$possible_collection};
                 $document = $collection->findOne($criteria);
-                if($document != NULL) {
-                  break;
+                if($document !== NULL) {
+                  break 1;
                 }
             }
           }
@@ -128,9 +128,9 @@ function mongoRead($server, $db, $collection, $id) {
           // search for all collections
           $all_other_possible_collections = array('most_wanted', 'best_rated', 'new_releases', 'new_entries');
           foreach ($all_other_possible_collections as $possible_collection){
-              $collection = $_db->{$collection};
+              $collection = $_db->{$possible_collection};
               $document = $collection->findOne($criteria);
-              if($document != NULL) {
+              if($document !== NULL) {
                 break;
               }
           }
