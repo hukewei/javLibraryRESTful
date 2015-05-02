@@ -13,6 +13,7 @@
 
 define('MONGO_MEMBER_COLLECTION', 'javLibrary.members');
 define('MONGO_MEMBER_PREFERENCE_COLLECTION', 'membersPreference');
+define('MONGO_ACTORS_NOTIFICATION_COLLECTION', 'actorsNotification');
 
 
 function mongoCreate($server, $db, $collection, $document) {
@@ -44,7 +45,8 @@ function mongoCreate($server, $db, $collection, $document) {
         // initialise the preference collection
         $preference_collection->insert(array("userID" => $document['_id'], 
           "favorite_actors" => array(), "favorite_videos" => array(),
-           "wanted_videos" => array(), "watched_videos" => array()));
+           "wanted_videos" => array(), "watched_videos" => array(),
+           "notified_actors" => array()));
         $conn->close();
         $return_value =   array("id" => $document['_id']);
       }
@@ -177,7 +179,13 @@ function mongoUpdate($server, $db, $collection, $id, $document, $action) {
       // make sure that an _id never gets through
       unset($document['_id']);
       if ($action == "PUSH") {
-        $collection->update($criteria,array('$addToSet' => $document));
+        if(array_key_exists('clientID', $document)) {
+          // set client ID for the user
+          $collection->update($criteria,array('$set' => $document));
+        } else {
+          $collection->update($criteria,array('$addToSet' => $document));
+        }
+        
       } else if ($action == "PULL") {
         $collection->update($criteria,
           array('$pull' => $document),
