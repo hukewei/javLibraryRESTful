@@ -187,6 +187,14 @@ function mongoUpdate($server, $db, $collection, $id, $document, $action) {
         }
         
       } else if ($action == "PULL") {
+        if(array_key_exists('favorite_actors', $document)) {
+          // if user remove the favorite actors, we will also try to remove the notified actor if applicable
+          $collection->update($criteria,
+          array('$pull' => array("notified_actors" => $document['favorite_actors'])),
+          array(
+            'multi' => true
+          ));
+        }
         $collection->update($criteria,
           array('$pull' => $document),
           array(
