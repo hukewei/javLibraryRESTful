@@ -80,6 +80,7 @@ function mongoRead($server, $db, $collection, $id) {
   
     $conn = new MongoClient($server);
     $_db = $conn->{$db};
+    $origin_collection = $collection;
     $collection = $_db->{$collection};
     if (strpos($id,'@') !== false) {
       //multiple resources get
@@ -89,6 +90,7 @@ function mongoRead($server, $db, $collection, $id) {
       $count = 0;
 
       foreach($mongoIdArray as $seprateIds){
+          $collection = $_db->{$origin_collection};
           $criteria = array(
             '_id' => $seprateIds instanceof MongoId ? $seprateIds : new MongoId($seprateIds)
           );
@@ -101,12 +103,15 @@ function mongoRead($server, $db, $collection, $id) {
                 $collection = $_db->{$possible_collection};
                 $document = $collection->findOne($criteria);
                 if($document !== NULL) {
-                  break 1;
+                  break;
                 }
             }
           }
-          $document['_id'] = $document['_id']->{'$id'};
-          $allDocument[] = $document;
+          if($document !== NULL && is_array($document) && array_key_exists('_id', $document)) {
+            $document['_id'] = $document['_id']->{'$id'};
+            $allDocument[] = $document;
+          }
+          
       }
       $conn->close();
       return $allDocument;
@@ -139,7 +144,9 @@ function mongoRead($server, $db, $collection, $id) {
         }
         $conn->close();
         
-        $document['_id'] = $document['_id']->{'$id'};
+        if($document !== NULL && is_array($document) && array_key_exists('_id', $document)) {
+          $document['_id'] = $document['_id']->{'$id'};
+        }
         $allDocument = array();
         $allDocument[] = $document;
         return $allDocument;
