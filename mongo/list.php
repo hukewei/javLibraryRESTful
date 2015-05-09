@@ -70,11 +70,12 @@ function mongoList($server, $db, $collection, $select = null) {
     
     if(isset($select['sort']) && $select['sort'] && count($select['sort'])) {
       $sort = array();
-      print_r($select);
       foreach($select['sort'] as $key => $value) {
         $sort[$key] = (int) $value;
       }
       $cursor->sort($sort);
+    } else {
+        $cursor->sort(array('_id'=> -1));
     }
 
     // set a limit
